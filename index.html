@@ -1,50 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>READYgg Guest and OAuth Login Example</title>
-<script src="script.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="loader" id="loader"></div>
-<div class="container">
-  <h1>READYgg Guest and OAuth Example</h1>
-  <p class="explanation">
-    Start by signing up anonymously to obtain a guest ID, ID Token, and Refresh Token. These credentials allow you to interact with the API as a guest user. Next, you can proceed with the OAuth login, which uses the acquired ID Token to merge the guest account with a formal account. This process is crucial for seamless account integration and merging.
-  </p>
-  <button onclick="signUpAnonymously()">Sign Up Anonymously</button>
-  <div id="guestResponse" style="visibility: hidden;">
-    <h2>Guest Login Success</h2>
-    <p>User ID: <span id="guestUserId"></span></p>
-    <p class="token-label">ID Token:</p>
-    <div class="code-block">
-      <span id="guestIdToken"></span>
-      <i class="fas fa-copy copy-icon" onclick="copyToClipboard('guestIdToken')"></i>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>READYgg Guest and OAuth Login Example</title>
+    <script src="script.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/json-formatter-js/dist/json-formatter.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/json-formatter-js"></script>
+  </head>
+  <body>
+    <div class="loader" id="loader"></div>
+    <div class="container">
+      <h1>READYgg Guest and OAuth Example</h1>
+      <p class="explanation">
+        Start by signing up anonymously to obtain a guest ID, ID Token, and
+        Refresh Token. These credentials allow you to interact with the API as a
+        guest user. Next, you can proceed with the OAuth login, which uses the
+        acquired ID Token to merge the guest account with a formal account. This
+        process is crucial for seamless account integration and merging.
+      </p>
+      <button onclick="signUpAnonymously()">Sign Up Anonymously</button>
+      <div id="guestResponse" style="visibility: hidden">
+        <h2>Guest Login Success</h2>
+        <p>User ID: <span id="guestUserId"></span></p>
+        <p class="token-label">ID Token:</p>
+        <div class="code-block">
+          <span id="guestIdToken"></span>
+          <i
+            class="fas fa-copy copy-icon"
+            onclick="copyToClipboard('guestIdToken')"
+          ></i>
+        </div>
+        <p class="token-label">Refresh Token:</p>
+        <div class="code-block">
+          <span id="guestRefreshToken"></span>
+          <i
+            class="fas fa-copy copy-icon"
+            onclick="copyToClipboard('guestRefreshToken')"
+          ></i>
+        </div>
+      </div>
+      <button onclick="openAuthWindow()">Proceed with OAuth Login</button>
+      <div id="virtualItems" style="visibility: hidden">
+        <div class="virtual-items-block">
+          <div>
+            <img src="./assets/realPrizes.png" />
+            <p>
+              <button onclick="claimItem('IfiSanjhAAsg9DIokB2b')">
+                Claim Virtual Item
+              </button>
+            </p>
+          </div>
+          <div>
+            <img src="./assets/tournaments.png" />
+            <p>
+              <button onclick="claimItem('aZfa1jIdIF626Yp9Q9c2')">
+                Claim Virtual Item
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div id="response">
+        <h2 id="login-success-label"></h2>
+        <p>Response:</p>
+        <p class="token-label">Inventory:</p>
+        <div class="code-block">
+          <span hidden id="inventory-success-raw"></span>
+          <span id="inventory-success-response"></span>
+          <i
+            class="fas fa-copy copy-icon"
+            onclick="copyToClipboard('inventory-success-raw')"
+          ></i>
+        </div>
+      </div>
     </div>
-    <p class="token-label">Refresh Token:</p>
-    <div class="code-block">
-      <span id="guestRefreshToken"></span>
-      <i class="fas fa-copy copy-icon" onclick="copyToClipboard('guestRefreshToken')"></i>
-    </div>
-  </div>
-  <button onclick="openAuthWindow()">Proceed with OAuth Login</button>
-  <div id="response">
-    <h2 id="login-success-label"></h2>
-    <p>User ID: <span id="login-success-userId"></span></p>
-    <p class="token-label">ID Token:</p>
-    <div class="code-block">
-      <span id="login-success-idToken"></span>
-      <i class="fas fa-copy copy-icon" onclick="copyToClipboard('login-success-idToken')"></i>
-    </div>
-    <p class="token-label">Refresh Token:</p>
-    <div class="code-block">
-      <span id="login-success-refreshToken"></span>
-      <i class="fas fa-copy copy-icon" onclick="copyToClipboard('login-success-refreshToken')"></i>
-    </div>
-  </div>
-</div>
-</body>
+  </body>
 </html>
