@@ -82,6 +82,27 @@
           ></i>
         </div>
       </div>
+
+      <div id="response">
+        <h2 id="login-success-label"></h2>
+        <p>User ID: <span id="login-success-userId"></span></p>
+        <p class="token-label">ID Token:</p>
+        <div class="code-block">
+          <span id="login-success-idToken"></span>
+          <i
+            class="fas fa-copy copy-icon"
+            onclick="copyToClipboard('login-success-idToken')"
+          ></i>
+        </div>
+        <p class="token-label">Refresh Token:</p>
+        <div class="code-block">
+          <span id="login-success-refreshToken"></span>
+          <i
+            class="fas fa-copy copy-icon"
+            onclick="copyToClipboard('login-success-refreshToken')"
+          ></i>
+        </div>
+      </div>
     </div>
   </body>
 </html>
