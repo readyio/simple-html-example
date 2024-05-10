@@ -82,7 +82,7 @@ window.addEventListener("message", function (e) {
       session.idToken;
     document.getElementById("login-success-refreshToken").innerHTML =
       session.refreshToken;
-    document.getElementById("response").style.visibility = "visible";
+    document.getElementById("response-oauth").style.display = "block";
 
     if (authWindow && session.closeModal) authWindow.close();
   }
@@ -107,8 +107,8 @@ async function signUpAnonymously() {
       document.getElementById("guestIdToken").textContent = idToken;
       document.getElementById("guestRefreshToken").textContent =
         data.refreshToken;
-      document.getElementById("guestResponse").style.visibility = "visible";
-      document.getElementById("virtualItems").style.visibility = "visible";
+      document.getElementById("guestResponse").style.display = "block";
+      document.getElementById("virtualItems").style.display = "block";
     } else {
       alert("Failed to retrieve tokens");
     }
@@ -133,6 +133,7 @@ async function getInventory() {
     });
     const data = await response.json();
     if (data) {
+      document.getElementById("response-inventory").style.display = "block";
       document.getElementById("inventory-success-raw").textContent =
         JSON.stringify(data);
       const formatter = new JSONFormatter(data);

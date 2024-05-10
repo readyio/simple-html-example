@@ -26,6 +26,16 @@ body {
   margin-bottom: 20px; /* Adds spacing at the bottom */
 }
 
+.container-inner {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border: 1px solid lightgray;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 21px;
+}
+
 button {
   background-color: #007bff;
   color: white;
