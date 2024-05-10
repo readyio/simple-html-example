@@ -1,16 +1,33 @@
 // Production URL's
-// var AUTH_URL = "https://oauth.ready.gg"
-// var API_URL = "https://us-central1-readymaster-2b268.cloudfunctions.net/user-signUpAnonymously"
+var AUTH_URL = "https://oauth.ready.gg"
+var API_URL = "https://us-central1-readymaster-2b268.cloudfunctions.net/user-signUpAnonymously"
 
-// Staging URL's
-var AUTH_URL = "https://staging-oauth.ready.gg"; // Staging URL
-var API_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/user-signUpAnonymously";
 var BUY_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/storeV2-buyVirtualItems";
+  "https://us-central1-readymaster-2b268.cloudfunctions.net/storeV2-buyVirtualItems";
 
 var INVENTORY_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/virtualItemsV2-getByAppId";
+  "https://us-central1-readymaster-2b268.cloudfunctions.net/virtualItemsV2-getByAppId";
+
+// Staging URL's
+//var AUTH_URL = "https://staging-oauth.ready.gg"; // Staging URL
+//var API_URL =
+//  "https://us-central1-readysandbox.cloudfunctions.net/user-signUpAnonymously";
+//var BUY_URL =
+//  "https://us-central1-readysandbox.cloudfunctions.net/storeV2-buyVirtualItems";
+
+//var INVENTORY_URL =
+//  "https://us-central1-readysandbox.cloudfunctions.net/virtualItemsV2-getByAppId";
+
+// Production URL's
+var AUTH_URL = "https://oauth.ready.gg"
+var API_URL = "https://us-central1-readymaster-development.cloudfunctions.net/user-signUpAnonymously"
+
+var BUY_URL =
+  "https://us-central1-readymaster-development.cloudfunctions.net/storeV2-buyVirtualItems";
+
+var INVENTORY_URL =
+  "https://us-central1-readymaster-development.cloudfunctions.net/virtualItemsV2-getByAppId";
+  
 
 var appId = "BTMEUeTQgkY37wLTehcl";
 var idToken;
