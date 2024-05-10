@@ -1,16 +1,13 @@
 // Production URL's
 // var AUTH_URL = "https://oauth.ready.gg"
-// var API_URL = "https://us-central1-readymaster-2b268.cloudfunctions.net/user-signUpAnonymously"
+// var ENV_BASE_URL = 'https://us-central1-readymaster-2b268.cloudfunctions.net/'
 
 // Staging URL's
 var AUTH_URL = "https://staging-oauth.ready.gg"; // Staging URL
-var API_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/user-signUpAnonymously";
-var BUY_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/storeV2-buyVirtualItems";
-
-var INVENTORY_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/virtualItemsV2-getByAppId";
+var ENV_BASE_URL = 'https://us-central1-readysandbox.cloudfunctions.net/'
+var SIGNUP_URL = ENV_BASE_URL + "user-signUpAnonymously";
+var PURCHASE_URL = ENV_BASE_URL + "storeV2-buyVirtualItems";
+var INVENTORY_URL = ENV_BASE_URL + "inventoryV2-getByAppIds";
 
 var appId = "BTMEUeTQgkY37wLTehcl";
 var idToken;
@@ -91,7 +88,7 @@ window.addEventListener("message", function (e) {
 async function signUpAnonymously() {
   document.getElementById("loader").style.display = "block"; // Show the loader
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(SIGNUP_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +125,7 @@ async function getInventory() {
         Authorization: "Bearer " + idToken,
       },
       body: JSON.stringify({
-        appId,
+        appIds: [appId], // Replace `appId` with an array containing your app IDs
       }),
     });
     const data = await response.json();
@@ -151,7 +148,7 @@ async function claimItem(itemId) {
   document.getElementById("loader").style.display = "block"; // Show the loader
   document.getElementById("inventory-success-response").textContent = "";
   try {
-    const response = await fetch(BUY_URL, {
+    const response = await fetch(PURCHASE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
