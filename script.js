@@ -169,6 +169,10 @@ async function getItemDetailsById(ids) {
     const data = await response.json();
     if (data) {
       document.getElementById("step_1").style.display = "none";
+      document.getElementById("item-img-1").src =
+        data.virtualItems[0].image.small;
+      document.getElementById("item-img-2").src =
+        data.virtualItems[1].image.small;
       showStep2();
     }
   } catch (error) {
