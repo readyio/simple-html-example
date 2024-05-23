@@ -1,19 +1,19 @@
-// Production URL's
-// var AUTH_URL = "https://oauth.ready.gg"
-// var API_URL = "https://us-central1-readymaster-2b268.cloudfunctions.net/user-signUpAnonymously"
-
 // Staging URL's
 var AUTH_URL = "https://staging-oauth.ready.gg"; // Staging URL
-var API_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/user-signUpAnonymously";
-var BUY_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/storeV2-buyVirtualItems";
+var CLOUD_FUNCTION_URL = "https://us-central1-readysandbox.cloudfunctions.net/";
+var API_URL = CLOUD_FUNCTION_URL + "user-signUpAnonymously";
+var BUY_URL = CLOUD_FUNCTION_URL + "storeV2-buyVirtualItems";
 
-var INVENTORY_URL =
-  "https://us-central1-readysandbox.cloudfunctions.net/virtualItemsV2-getByAppId";
+//var STORE_URL = CLOUD_FUNCTION_URL + "storeV2-getByTags";
+var STORE_URL = CLOUD_FUNCTION_URL + "storeV2-getByIds";
+var ITEMS_URL = CLOUD_FUNCTION_URL + "virtualItemsV2-getByIds";
+var INVENTORY_URL = CLOUD_FUNCTION_URL + "virtualItemsV2-getByAppId";
 
-var appId = "BTMEUeTQgkY37wLTehcl";
+var appId = "t0cjjmEBbTer4YXiRfFa"; //project id
+var storeOfferId = "LDB55noxmZ2O9MStHMaf";
 var idToken;
+var itemId_1;
+var itemId_2;
 var authWindow = null;
 
 function getWindowOptions() {
@@ -97,7 +97,7 @@ async function signUpAnonymously() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        appPackageName: "qnThpH3csJSjy0HRr9mj",
+        appId: "qnThpH3csJSjy0HRr9mj",
       }),
     });
     const data = await response.json();
@@ -107,15 +107,79 @@ async function signUpAnonymously() {
       document.getElementById("guestIdToken").textContent = idToken;
       document.getElementById("guestRefreshToken").textContent =
         data.refreshToken;
-      document.getElementById("guestResponse").style.display = "block";
-      document.getElementById("virtualItems").style.display = "block";
+
+      getStoreOffer();
     } else {
       alert("Failed to retrieve tokens");
     }
   } catch (error) {
     alert("Error: " + error.message);
   }
+  //document.getElementById("loader").style.display = "none"; // Hide the loader
+}
+
+async function getStoreOffer() {
+  document.getElementById("loader").style.display = "block"; // Show the loader
+  //document.getElementById("inventory-success-response").textContent = "";
+  try {
+    const response = await fetch(STORE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + idToken,
+      },
+      body: JSON.stringify({
+        appId,
+        ids: [storeOfferId],
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+      const offer = data.offers.find((offer) => offer.id == storeOfferId);
+      if (offer) {
+        document.getElementById("campaign-title").textContent = offer.name;
+        document.getElementById("campaign-end").textContent =
+          calculateDaysHoursLeft(offer.time.end);
+        itemId_1 = offer.itemIds[0];
+        itemId_2 = offer.itemIds[1];
+        getItemDetailsById([itemId_1, itemId_2]);
+      }
+    }
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+  //document.getElementById("loader").style.display = "none"; // Hide the loader
+}
+
+async function getItemDetailsById(ids) {
+  document.getElementById("loader").style.display = "block"; // Show the loader
+  //document.getElementById("inventory-success-response").textContent = "";
+  try {
+    const response = await fetch(ITEMS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + idToken,
+      },
+      body: JSON.stringify({
+        appId,
+        ids,
+      }),
+    });
+    const data = await response.json();
+    if (data) {
+      document.getElementById("step_1").style.display = "none";
+      showStep2();
+    }
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
   document.getElementById("loader").style.display = "none"; // Hide the loader
+}
+
+function showStep2() {
+  document.getElementById("guestResponse").style.display = "block";
+  document.getElementById("virtualItems").style.display = "block";
 }
 
 async function getInventory() {
@@ -147,7 +211,7 @@ async function getInventory() {
   document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
-async function claimItem(itemId) {
+async function claimItem(itemIndex) {
   document.getElementById("loader").style.display = "block"; // Show the loader
   document.getElementById("inventory-success-response").textContent = "";
   try {
@@ -159,7 +223,7 @@ async function claimItem(itemId) {
       },
       body: JSON.stringify({
         appId,
-        itemIds: [itemId],
+        itemIds: [this["itemId_" + itemIndex]],
       }),
     });
     const data = await response.json();
@@ -169,7 +233,7 @@ async function claimItem(itemId) {
   } catch (error) {
     alert("Error: " + error.message);
   }
-  document.getElementById("loader").style.display = "none"; // Hide the loader
+  //document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
 function copyToClipboard(elementId) {
@@ -182,4 +246,30 @@ function copyToClipboard(elementId) {
       alert("Failed to copy");
     }
   );
+}
+
+function convertTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Months are zero-based, so we add 1
+  const day = date.getDate();
+
+  const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day
+    .toString()
+    .padStart(2, "0")}`;
+
+  return formattedDate;
+}
+
+function calculateDaysHoursLeft(date) {
+  const today = new Date();
+  const targetDate = new Date(date);
+
+  const timeDifference = targetDate.getTime() - today.getTime();
+  const daysLeft = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  const hoursLeft = Math.floor(
+    (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+
+  return `${daysLeft} days and ${hoursLeft} hours`;
 }

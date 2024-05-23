@@ -19,60 +19,62 @@
   <body>
     <div class="loader" id="loader"></div>
     <div class="container">
-      <h1>READYgg Guest and OAuth Example</h1>
-      <p class="explanation">
-        Start by signing up anonymously to obtain a guest ID, ID Token, and
-        Refresh Token. These credentials allow you to interact with the API as a
-        guest user. Next, you can proceed with the OAuth login, which uses the
-        acquired ID Token to merge the guest account with a formal account. This
-        process is crucial for seamless account integration and merging.
-      </p>
+      <div id="step_1">
+        <h1>READYgg Guest and OAuth Example</h1>
+        <p class="explanation">
+          Start by signing up anonymously to obtain a guest ID, ID Token, and
+          Refresh Token. These credentials allow you to interact with the API as
+          a guest user. Next, you can proceed with the OAuth login, which uses
+          the acquired ID Token to merge the guest account with a formal
+          account. This process is crucial for seamless account integration and
+          merging.
+        </p>
 
-      <!-- sign up anonymously:start -->
-      <div class="container-inner">
-        <button onclick="signUpAnonymously()">Sign Up Anonymously</button>
-        <div id="guestResponse" style="display: none">
-          <p>User ID: <span id="guestUserId"></span></p>
-          <p class="token-label">ID Token:</p>
-          <div class="code-block">
-            <span id="guestIdToken"></span>
-            <i
-              class="fas fa-copy copy-icon"
-              onclick="copyToClipboard('guestIdToken')"
-            ></i>
-          </div>
-          <p class="token-label">Refresh Token:</p>
-          <div class="code-block">
-            <span id="guestRefreshToken"></span>
-            <i
-              class="fas fa-copy copy-icon"
-              onclick="copyToClipboard('guestRefreshToken')"
-            ></i>
+        <!-- sign up anonymously:start -->
+        <div class="container-inner">
+          <button onclick="signUpAnonymously()">Sign Up Anonymously</button>
+          <div id="guestResponse" style="display: none">
+            <p>User ID: <span id="guestUserId"></span></p>
+            <p class="token-label">ID Token:</p>
+            <div class="code-block">
+              <span id="guestIdToken"></span>
+              <i
+                class="fas fa-copy copy-icon"
+                onclick="copyToClipboard('guestIdToken')"
+              ></i>
+            </div>
+            <p class="token-label">Refresh Token:</p>
+            <div class="code-block">
+              <span id="guestRefreshToken"></span>
+              <i
+                class="fas fa-copy copy-icon"
+                onclick="copyToClipboard('guestRefreshToken')"
+              ></i>
+            </div>
           </div>
         </div>
       </div>
       <!-- sign up anonymously:end -->
 
       <!--virtual items:start -->
-
       <div class="container-inner" id="virtualItems" style="display: none">
         <div>
-          <h2>Virtual Items</h2>
+          <h2 id="campaign-title">Virtual Items</h2>
+          <h3 class="offer-end">
+            Offer ending in <span id="campaign-end"></span>
+          </h3>
+          <h4>New registrations get to choose one of these free gifts!</h4>
           <div class="virtual-items-block">
             <div>
-              <img src="./assets/realPrizes.png" />
+              <img alt="no image found" src="" />
               <p>
-                <button onclick="claimItem('IfiSanjhAAsg9DIokB2b')">
-                  Claim Virtual Item
-                </button>
+                <button onclick="claimItem(1)">Claim Virtual Item</button>
               </p>
             </div>
             <div>
-              <img src="./assets/tournaments.png" />
+              <img alt="no image found" src="" />
               <p>
-                <button onclick="claimItem('aZfa1jIdIF626Yp9Q9c2')">
-                  Claim Virtual Item
-                </button>
+                <button onclick="claimItem(2)">Claim Virtual Item</button>
               </p>
             </div>
           </div>

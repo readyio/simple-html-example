@@ -1,3 +1,11 @@
+body {
+  background-image: url("./assets/minijuegos_com.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(8px);
+}
+
 body,
 html {
   height: 100%; /* Updated to ensure proper scaling */
@@ -23,7 +31,11 @@ body {
   text-align: center;
   width: 80%;
   max-width: 600px;
-  margin-bottom: 20px; /* Adds spacing at the bottom */
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .container-inner {
@@ -88,6 +100,9 @@ button:hover {
   margin-top: 20px;
   font-size: 14px;
 }
+.offer-end {
+  color: red;
+}
 
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */
@@ -101,6 +116,7 @@ button:hover {
   left: 50%;
   transform: translate(-50%, -50%);
   display: none; /* Hidden by default */
+  z-index: 100;
 }
 .virtual-items-block {
   display: flex;
