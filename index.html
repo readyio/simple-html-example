@@ -83,6 +83,8 @@
           </h3>
           <h4>New registrations get to choose one of these free gifts!</h4>
 
+          <div id="offer-message" class="offer-message"></div>
+
           <ul class="explanation">
             <h2>How to Use Our API:</h2>
             <ol>
@@ -98,19 +100,21 @@
             <div>
               <img id="item-img-1" alt="no image found" src="" />
               <p>
-                <button onclick="claimItem(1)">Claim Virtual Item</button>
+                <button id="virtual-item-1" onclick="claimItem(1)">
+                  Claim Virtual Item
+                </button>
               </p>
             </div>
             <div>
               <img id="item-img-2" alt="no image found" src="" />
               <p>
-                <button onclick="claimItem(2)">Claim Virtual Item</button>
+                <button id="virtual-item-2" onclick="claimItem(2)">
+                  Claim Virtual Item
+                </button>
               </p>
             </div>
           </div>
         </div>
-
-        <div id="offer-message" class="offer-message"></div>
 
         <div id="response-inventory" style="display: none">
           <p class="token-label">Inventory:</p>

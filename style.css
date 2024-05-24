@@ -34,7 +34,7 @@ body {
   z-index: 10;
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 680px;
   transform: translate(-50%, -50%);
 }
 
@@ -62,6 +62,12 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: grey;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .code-block,
@@ -95,11 +101,10 @@ button:hover {
   margin-top: 10px;
 }
 .offer-message {
-  background: #323232;
   padding: 30px;
-  color: #fec806;
+  color: red;
   border-radius: 10px;
-  border: 4px dashed yellow;
+  border: 4px dashed red;
   font-size: 35px;
   display: none;
 }
@@ -145,6 +150,7 @@ button:hover {
 
 #toaster-container {
   position: fixed;
+
   top: 0;
   left: 0;
   z-index: 1000;
@@ -154,7 +160,7 @@ button:hover {
 .toaster {
   background-color: white;
   color: white;
-  padding: 15px;
+  padding: 13px;
   font-size: small;
   margin-top: 10px;
   border-radius: 5px;
@@ -166,7 +172,7 @@ button:hover {
   background-color: green;
 }
 .toaster.error {
-  border-left: 8px solid rgb(255, 62, 62);
+  border-left: 8px solid rgb(255, 105, 105);
   background-color: red;
 }
 .toaster.info {

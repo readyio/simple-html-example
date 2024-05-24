@@ -5,11 +5,10 @@ var API_URL = CLOUD_FUNCTION_URL + "user-signUpAnonymously";
 var REFRESH_URL = CLOUD_FUNCTION_URL + "user-refreshTokens";
 var BUY_URL = CLOUD_FUNCTION_URL + "storeV2-buyVirtualItems";
 
-//var STORE_URL = CLOUD_FUNCTION_URL + "storeV2-getByTags";
-var STORE_URL = CLOUD_FUNCTION_URL + "storeV2-getByIds";
-var ITEMS_URL = CLOUD_FUNCTION_URL + "virtualItemsV2-getByIds";
-var INVENTORY_URL = CLOUD_FUNCTION_URL + "virtualItemsV2-getByAppId";
+var STORE_URL = CLOUD_FUNCTION_URL + "storeV2-getByIds"; //get the offer and will receive X Virtual Items IDs
 
+var INVENTORY_URL = CLOUD_FUNCTION_URL + "inventoryV2-getByAppIds";
+var ITEMS_URL = CLOUD_FUNCTION_URL + "virtualItemsV2-getByIds";
 var appId = "t0cjjmEBbTer4YXiRfFa"; //project id
 
 var storeOfferId = "LDB55noxmZ2O9MStHMaf";
@@ -17,27 +16,8 @@ var idToken;
 var itemId_1;
 var itemId_2;
 
-function getHeaders() {
-  return {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + getIdToken(),
-  };
-}
-
-function checkForSavedTokens() {
-  const savedIdToken = localStorage.getItem("idToken");
-  return Boolean(savedIdToken);
-}
-
-function removeItemsFromLocalStorage() {
-  localStorage.removeItem("idToken");
-}
-
-function getIdToken() {
-  return localStorage.getItem("idToken");
-}
-
 function handleTokenExpiry(errorMessage, redirectMethod) {
+  document.getElementById("loader").style.display = "none"; // Hide the loader
   if (errorMessage.includes("Failed to verify the token")) {
     showToaster(
       "Token expired! Deleting saved tokens and obtaining new one...",
@@ -61,13 +41,9 @@ async function refreshToken() {
     });
     const data = await response.json();
 
-    if (!response.ok) {
-      //what happens here?
-    }
-
     if (data) {
-      localStorage.setItem("idToken", data.refreshToken);
-      localStorage.setItem("appId", data.appId);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("idToken", data.idToken);
       showToaster("New refreshed tokens saved!", "success");
     }
   } catch (error) {
@@ -76,17 +52,7 @@ async function refreshToken() {
   document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
-async function signUpAnonymously(redirectMethod) {
-  if (checkForSavedTokens()) {
-    showToaster("Logging in automatically..", "info");
-    await refreshToken();
-    if (redirectMethod) {
-      redirectMethod();
-    } else {
-      getStoreOffer(); //automatically logged in
-    }
-    return;
-  }
+async function createNewUser() {
   document.getElementById("loader").style.display = "block"; // Show the loader
   try {
     const response = await fetch(API_URL, {
@@ -98,23 +64,6 @@ async function signUpAnonymously(redirectMethod) {
     });
     const data = await response.json();
     if (data.userId && data.idToken && data.refreshToken) {
-      //(data.refreshToken, idToken and userId) saved to localStorage
-      //after 30minutes the Claim endpoint will return "your token is expired"
-      //401 - unauthorised status (means new fresh token must be obtained)
-
-      //    - message : { "message": "The token has expired."}
-      //so then the refreshToken endpoint mustbe called.
-      // refresh token endpoint: {{CloudFunctionURL}}/user-refreshTokens
-
-      //   body : {
-
-      //     "appId": "{{projectId}}",
-      //     "refreshToken": "{{refreshToken}}"
-      // }
-      //the refreshToken response must be replace the localStorage contents (user id will remain the same)
-
-      //proceed with the claim
-
       showToaster(
         "Succesfully obtained new idToken and refreshtoken for user : " +
           data.userId,
@@ -131,26 +80,65 @@ async function signUpAnonymously(redirectMethod) {
       localStorage.setItem("userId", data.userId);
       localStorage.setItem("idToken", data.idToken);
       localStorage.setItem("refreshToken", data.refreshToken);
-      showToaster("Tokens saved to local computer", "info");
 
-      if (redirectMethod) {
-        redirectMethod();
-      } else {
-        getStoreOffer();
-      }
+      showToaster("Tokens saved to local computer", "info");
+      return;
     } else {
       showToaster("Failed to retrieve tokens!", "error");
     }
   } catch (error) {
     alert("Error: " + error.message);
   }
-  //document.getElementById("loader").style.display = "none"; // Hide the loader
+}
+
+async function signUpAnonymously(redirectMethod) {
+  if (checkForSavedTokens()) {
+    showToaster("Logging in automatically..", "info");
+    await refreshToken();
+  } else {
+    showToaster("Creating new user..", "info");
+    await createNewUser();
+  }
+  if (redirectMethod) {
+    redirectMethod();
+  } else {
+    validateStoreOffer(); //automatically logged in
+  }
+}
+
+async function validateStoreOffer() {
+  function proceedWithOffer() {
+    getItemDetailsById([itemId_1, itemId_2]);
+  }
+  const res = await Promise.all([getStoreOffer(), getInventory()]);
+  if (res) {
+    const storeItems = res[0].itemIds;
+    const inventoryItems = res[1];
+
+    //inventory is empty
+    if (!inventoryItems.length) {
+      proceedWithOffer();
+    }
+
+    //inventory is not empty
+    if (inventoryItems.length) {
+      const claimedItem = inventoryItems.some((invItem) => {
+        return storeItems.includes(invItem.virtualItemId);
+      });
+
+      if (claimedItem) {
+        disableStoreOffer("Store offer has been claimed!");
+      } else {
+        proceedWithOffer();
+      }
+    }
+  }
 }
 
 async function getStoreOffer() {
   showToaster("Fetching store offer...", "info");
   document.getElementById("loader").style.display = "block"; // Show the loader
-  //document.getElementById("inventory-success-response").textContent = "";
+
   try {
     const response = await fetch(STORE_URL, {
       method: "POST",
@@ -163,9 +151,7 @@ async function getStoreOffer() {
     const data = await response.json();
 
     if (!response.ok) {
-      showToaster("Obtaining Store offer failed!", "error");
-      handleTokenExpiry(data.message, getStoreOffer);
-      return;
+      throw new Error(data.message);
     }
 
     if (data) {
@@ -180,19 +166,18 @@ async function getStoreOffer() {
           calculateDaysHoursLeft(offer.time.start, offer.time.end);
         itemId_1 = offer.itemIds[0];
         itemId_2 = offer.itemIds[1];
-        getItemDetailsById([itemId_1, itemId_2]);
+        return offer;
       }
     }
   } catch (error) {
-    alert("Error: " + error.message);
+    showToaster("Obtaining Store offer failed!", "error");
+    handleTokenExpiry(error.message, getStoreOffer);
   }
-  //document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
 async function getItemDetailsById(ids) {
   showToaster("Getting Virtual Items details...", "info");
   document.getElementById("loader").style.display = "block"; // Show the loader
-  //document.getElementById("inventory-success-response").textContent = "";
   try {
     const response = await fetch(ITEMS_URL, {
       method: "POST",
@@ -205,15 +190,10 @@ async function getItemDetailsById(ids) {
     const data = await response.json();
 
     if (!response.ok) {
-      showToaster("Obtaining Item details failed!", "info");
-      handleTokenExpiry(data.message, () => {
-        getItemDetailsById(ids);
-      });
-      return;
+      throw new Error(data.message);
     }
 
     if (data) {
-      document.getElementById("step_1").style.display = "none";
       document.getElementById("item-img-1").src =
         data.virtualItems[0].image.small;
       document.getElementById("item-img-2").src =
@@ -222,12 +202,16 @@ async function getItemDetailsById(ids) {
       showStep2();
     }
   } catch (error) {
-    alert("Error: " + error.message);
+    showToaster("Obtaining Item details failed!", "info");
+    handleTokenExpiry(error.message, () => {
+      getItemDetailsById(ids);
+    });
   }
   document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
 function showStep2() {
+  document.getElementById("step_1").style.display = "none";
   document.getElementById("guestResponse").style.display = "block";
   document.getElementById("virtualItems").style.display = "block";
 }
@@ -252,59 +236,79 @@ async function claimItem(itemIndex) {
     const data = await response.json();
 
     if (!response.ok) {
-      showToaster("Claiming Item failed!", "error");
-      handleTokenExpiry(data.message, () => {
-        claimItem(itemIndex);
-      });
-      return;
+      throw new Error(data.message);
     }
 
     if (data) {
       showToaster("Virtual Item succesfully claimed!", "success");
-      getInventory();
+      disableStoreOffer("Store offer has been claimed!");
+      const output = await getInventory();
+      if (output) {
+        document.getElementById("response-inventory").style.display = "block";
+        document.getElementById("inventory-success-raw").textContent =
+          JSON.stringify(output);
+        const formatter = new JSONFormatter(output);
+        document
+          .getElementById("inventory-success-response")
+          .appendChild(formatter.render());
+      }
     }
   } catch (error) {
-    alert("Error: " + error.message);
+    showToaster("Claiming Item failed!", "error");
+    handleTokenExpiry(error.message, () => {
+      claimItem(itemIndex);
+    });
   }
-  //document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
 async function getInventory() {
-  showToaster("Getting Inventory object...", "info");
+  showToaster("Getting Inventory...", "info");
   document.getElementById("loader").style.display = "block"; // Show the loader
   try {
     const response = await fetch(INVENTORY_URL, {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({
-        appId,
+        appIds: [appId],
       }),
     });
     const data = await response.json();
 
     if (!response.ok) {
-      showToaster("Obtaining Inventory failed!", "error");
-      handleTokenExpiry(data.message, getInventory);
-      return;
+      throw new Error(data.message);
     }
 
     if (data) {
-      showToaster("Inventory object succesfully obtained!", "success");
-      document.getElementById("response-inventory").style.display = "block";
-      document.getElementById("inventory-success-raw").textContent =
-        JSON.stringify(data);
-      const formatter = new JSONFormatter(data);
-      document
-        .getElementById("inventory-success-response")
-        .appendChild(formatter.render());
+      showToaster("Inventory succesfully provided!", "success");
+      document.getElementById("loader").style.display = "none"; // Hide the loader
+      return data;
     }
   } catch (error) {
-    alert("Error: " + error.message);
+    showToaster("Obtaining Inventory failed!", "error");
+    handleTokenExpiry(error.message, getInventory);
   }
-  document.getElementById("loader").style.display = "none"; // Hide the loader
 }
 
 // ** HELPER METHODS : ** //
+function getHeaders() {
+  return {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + getIdToken(),
+  };
+}
+
+function checkForSavedTokens() {
+  const savedIdToken = localStorage.getItem("idToken");
+  return Boolean(savedIdToken);
+}
+
+function removeItemsFromLocalStorage() {
+  localStorage.removeItem("idToken");
+}
+
+function getIdToken() {
+  return localStorage.getItem("idToken");
+}
 
 function copyToClipboard(elementId) {
   var copyText = document.getElementById(elementId).textContent;
@@ -318,28 +322,27 @@ function copyToClipboard(elementId) {
   );
 }
 
+function disableStoreOffer(msg) {
+  showStep2();
+  document.getElementById("virtual-items").style.display = "none";
+  document.getElementById("offer-message").style.display = "block";
+  document.getElementById("offer-message").textContent = msg;
+  showToaster("Store offer claimed!", "error");
+}
+
 function calculateDaysHoursLeft(startDate, endDate) {
   const today = new Date();
   const targetDate = new Date(endDate);
   showToaster("Checking offer validity..", "info");
 
   // Check if the offer has not started yet
-  if (today < new Date(startDate)) {
-    document.getElementById("virtual-items").style.display = "none";
-    document.getElementById("offer-message").style.display = "block";
-    document.getElementById("offer-message").textContent =
-      "Store Offer has not started yet!";
-  }
+  today < new Date(startDate) &&
+    disableStoreOffer("Store Offer has not started yet!");
 
   const timeDifference = targetDate.getTime() - today.getTime();
 
   // Check if the offer has ended
-  if (timeDifference < 0) {
-    document.getElementById("virtual-items").style.display = "none";
-    document.getElementById("offer-message").style.display = "block";
-    document.getElementById("offer-message").textContent =
-      "Store Offer has ended!";
-  }
+  timeDifference < 0 && disableStoreOffer("Store Offer has ended!");
 
   const daysLeft = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
   const hoursLeft = Math.floor(
@@ -357,9 +360,4 @@ function showToaster(message, type) {
 
   // Append toaster to the container
   container.appendChild(toaster);
-
-  // Set timeout to remove toaster
-  setTimeout(() => {
-    toaster.remove();
-  }, 20000);
 }
