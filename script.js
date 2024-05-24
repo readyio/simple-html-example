@@ -216,6 +216,19 @@ function showStep2() {
   document.getElementById("virtualItems").style.display = "block";
 }
 
+async function displayInventory() {
+  const output = await getInventory();
+  if (output) {
+    document.getElementById("response-inventory").style.display = "block";
+    document.getElementById("inventory-success-raw").textContent =
+      JSON.stringify(output);
+    const formatter = new JSONFormatter(output);
+    document
+      .getElementById("inventory-success-response")
+      .appendChild(formatter.render());
+  }
+}
+
 async function claimItem(itemIndex) {
   showToaster(
     "Claiming Virtual Item with ID : " + this["itemId_" + itemIndex],
@@ -242,16 +255,6 @@ async function claimItem(itemIndex) {
     if (data) {
       showToaster("Virtual Item succesfully claimed!", "success");
       disableStoreOffer("Store offer has been claimed!");
-      const output = await getInventory();
-      if (output) {
-        document.getElementById("response-inventory").style.display = "block";
-        document.getElementById("inventory-success-raw").textContent =
-          JSON.stringify(output);
-        const formatter = new JSONFormatter(output);
-        document
-          .getElementById("inventory-success-response")
-          .appendChild(formatter.render());
-      }
     }
   } catch (error) {
     showToaster("Claiming Item failed!", "error");
@@ -328,6 +331,7 @@ function disableStoreOffer(msg) {
   document.getElementById("offer-message").style.display = "block";
   document.getElementById("offer-message").textContent = msg;
   showToaster("Store offer claimed!", "error");
+  displayInventory();
 }
 
 function calculateDaysHoursLeft(startDate, endDate) {
