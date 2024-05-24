@@ -38,7 +38,7 @@ function getIdToken() {
 }
 
 function handleTokenExpiry(errorMessage, redirectMethod) {
-  if (errorMessage.includes("Failed to verify the token!")) {
+  if (errorMessage.includes("Failed to verify the token")) {
     showToaster(
       "Token expired! Deleting saved tokens and obtaining new one...",
       "error"
@@ -253,7 +253,9 @@ async function claimItem(itemIndex) {
 
     if (!response.ok) {
       showToaster("Claiming Item failed!", "error");
-      handleTokenExpiry(data.message, claimItem);
+      handleTokenExpiry(data.message, () => {
+        claimItem(itemIndex);
+      });
       return;
     }
 
