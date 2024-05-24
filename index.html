@@ -17,18 +17,36 @@
     <script src="https://cdn.jsdelivr.net/npm/json-formatter-js"></script>
   </head>
   <body>
+    <div id="toaster-container"></div>
+
     <div class="loader" id="loader"></div>
     <div class="container">
       <div id="step_1">
         <h1>READYgg Guest and OAuth Example</h1>
-        <p class="explanation">
+        <!-- <p class="explanation">
           Start by signing up anonymously to obtain a guest ID, ID Token, and
           Refresh Token. These credentials allow you to interact with the API as
           a guest user. Next, you can proceed with the OAuth login, which uses
           the acquired ID Token to merge the guest account with a formal
           account. This process is crucial for seamless account integration and
           merging.
-        </p>
+        </p> -->
+
+        <ul class="explanation">
+          <h2>User Authentication Instructions:</h2>
+          <ol>
+            <li>
+              When you first visit the website and no token is found, a sign up
+              is done anonymously. This will return tokens that will be saved
+              locally.
+            </li>
+            <li>
+              If you've logged in before, request new refreshTokens and replace
+              the saved one.
+            </li>
+            <li>Once you're logged in, you can start using the Readygg API.</li>
+          </ol>
+        </ul>
 
         <!-- sign up anonymously:start -->
         <div class="container-inner">
@@ -64,7 +82,19 @@
             Offer ending in <span id="campaign-end"></span>
           </h3>
           <h4>New registrations get to choose one of these free gifts!</h4>
-          <div class="virtual-items-block">
+
+          <ul class="explanation">
+            <h2>How to Use Our API:</h2>
+            <ol>
+              <li>Check if there's a special offer available.</li>
+              <li>If there is, check if the user has already claimed it.</li>
+              <li>If not, show the available virtual items.</li>
+              <li>
+                Let the user choose an item and buy it using the 'Claim' button.
+              </li>
+            </ol>
+          </ul>
+          <div id="virtual-items" class="virtual-items-block">
             <div>
               <img id="item-img-1" alt="no image found" src="" />
               <p>
@@ -80,6 +110,8 @@
           </div>
         </div>
 
+        <div id="offer-message" class="offer-message"></div>
+
         <div id="response-inventory" style="display: none">
           <p class="token-label">Inventory:</p>
           <div class="code-block">
@@ -93,32 +125,6 @@
         </div>
       </div>
       <!--virtual items:end -->
-
-      <!-- oauth login:start -->
-      <div class="container-inner">
-        <button onclick="openAuthWindow()">Proceed with OAuth Login</button>
-        <div id="response-oauth" style="display: none">
-          <h2 id="login-success-label"></h2>
-          <p>User ID: <span id="login-success-userId"></span></p>
-          <p class="token-label">ID Token:</p>
-          <div class="code-block">
-            <span id="login-success-idToken"></span>
-            <i
-              class="fas fa-copy copy-icon"
-              onclick="copyToClipboard('login-success-idToken')"
-            ></i>
-          </div>
-          <p class="token-label">Refresh Token:</p>
-          <div class="code-block">
-            <span id="login-success-refreshToken"></span>
-            <i
-              class="fas fa-copy copy-icon"
-              onclick="copyToClipboard('login-success-refreshToken')"
-            ></i>
-          </div>
-        </div>
-      </div>
-      <!-- oauth login:end -->
     </div>
   </body>
 </html>
