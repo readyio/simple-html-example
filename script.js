@@ -126,7 +126,7 @@ async function getInventory() {
         Authorization: "Bearer " + idToken,
       },
       body: JSON.stringify({
-        appId,
+        appIds: [appId]
       }),
     });
     const data = await response.json();
