@@ -70,6 +70,14 @@ button:disabled {
   opacity: 0.5;
 }
 
+button.large {
+  width: 90%;
+  height: 100px;
+  border: 3px outset blue;
+  font-size: 20px;
+  border-radius: 10px;
+}
+
 .code-block,
 #response,
 #guestResponse {

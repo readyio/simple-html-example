@@ -23,15 +23,6 @@
     <div class="container">
       <div id="step_1">
         <h1>READYgg Guest and OAuth Example</h1>
-        <!-- <p class="explanation">
-          Start by signing up anonymously to obtain a guest ID, ID Token, and
-          Refresh Token. These credentials allow you to interact with the API as
-          a guest user. Next, you can proceed with the OAuth login, which uses
-          the acquired ID Token to merge the guest account with a formal
-          account. This process is crucial for seamless account integration and
-          merging.
-        </p> -->
-
         <ul class="explanation">
           <h2>User Authentication Instructions:</h2>
           <ol>
@@ -50,26 +41,9 @@
 
         <!-- sign up anonymously:start -->
         <div class="container-inner">
-          <button onclick="signUpAnonymously()">Sign Up Anonymously</button>
-          <div id="guestResponse" style="display: none">
-            <p>User ID: <span id="guestUserId"></span></p>
-            <p class="token-label">ID Token:</p>
-            <div class="code-block">
-              <span id="guestIdToken"></span>
-              <i
-                class="fas fa-copy copy-icon"
-                onclick="copyToClipboard('guestIdToken')"
-              ></i>
-            </div>
-            <p class="token-label">Refresh Token:</p>
-            <div class="code-block">
-              <span id="guestRefreshToken"></span>
-              <i
-                class="fas fa-copy copy-icon"
-                onclick="copyToClipboard('guestRefreshToken')"
-              ></i>
-            </div>
-          </div>
+          <button class="large" onclick="signUpAnonymously()">
+            Sign Up Anonymously
+          </button>
         </div>
       </div>
       <!-- sign up anonymously:end -->
