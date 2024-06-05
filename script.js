@@ -9,7 +9,7 @@ var SIGNUP_URL = ENV_BASE_URL + "user-signUpAnonymously";
 var PURCHASE_URL = ENV_BASE_URL + "storeV2-buyVirtualItems";
 var INVENTORY_URL = ENV_BASE_URL + "inventoryV2-getByAppIds";
 
-var appId = "BTMEUeTQgkY37wLTehcl";
+var appId = "Ux4YRt09ayH2D0qEAW3Y";
 var idToken;
 var authWindow = null;
 
