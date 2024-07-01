@@ -117,6 +117,32 @@
         </div>
       </div>
       <!-- oauth login:end -->
+
+      <!-- oauth login:start -->
+      <div class="container-inner">
+        <button onclick="openAuthWindow()">Logout</button>
+        <div id="response-oauth" style="display: none">
+          <h2 id="login-success-label"></h2>
+          <p>User ID: <span id="logout-success-userId"></span></p>
+          <p class="token-label">ID Token:</p>
+          <div class="code-block">
+            <span id="logout-success-idToken"></span>
+            <i
+              class="fas fa-copy copy-icon"
+              onclick="copyToClipboard('logout-success-idToken')"
+            ></i>
+          </div>
+          <p class="token-label">Refresh Token:</p>
+          <div class="code-block">
+            <span id="logout-success-refreshToken"></span>
+            <i
+              class="fas fa-copy copy-icon"
+              onclick="copyToClipboard('logout-success-refreshToken')"
+            ></i>
+          </div>
+        </div>
+      </div>
+      <!-- oauth login:end -->
     </div>
   </body>
 </html>
