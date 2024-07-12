@@ -116,7 +116,7 @@ async function signUpAnonymously() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        appPackageName: appId,
+        appId: appId,
       }),
     });
     const data = await response.json();
