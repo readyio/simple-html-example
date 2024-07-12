@@ -5,6 +5,7 @@
 // Staging URL's
 var AUTH_URL = "https://staging-oauth.ready.gg"; // Staging URL
 var ENV_BASE_URL = 'https://us-central1-readysandbox.cloudfunctions.net/'
+
 var SIGNUP_URL = ENV_BASE_URL + "user-signUpAnonymously";
 var PURCHASE_URL = ENV_BASE_URL + "storeV2-buyVirtualItems";
 var INVENTORY_URL = ENV_BASE_URL + "inventoryV2-getByAppIds";
@@ -68,6 +69,27 @@ function openAuthWindow() {
   document.getElementById("loader").style.display = "none"; // Ideally, hide when the window is confirmed open
 }
 
+function openAuthWindowWithLogout() {
+  document.getElementById("loader").style.display = "block"; // Show the loader when opening window
+
+  const windowOptions = getWindowOptions();
+  let url = `${AUTH_URL}/?url_redirect=${window.location.href}&appId=${appId}&returnSecureToken=true&forceLogout=true`;
+  const email = "test@email.com"; // Optional parameter that defines the email of the user automatically.
+  const profile = "testProfile"; // Optional parameter that defines the Profile Name of the user automatically.
+  const view = "signup"; // Optional parameter that presents the account creation view after page loading.
+
+  // Check if an ID Token already exists and include it in the URL
+  const existingIdToken = document.getElementById("guestIdToken").textContent;
+  if (existingIdToken) {
+    url += `&idToken=${encodeURIComponent(existingIdToken)}`;
+  }
+
+  const urlWithEmailAndProfile = `${url}&email=${email}&profile=${profile}&view=${view}`;
+  authWindow = window.open(urlWithEmailAndProfile, "_blank", windowOptions);
+  document.getElementById("loader").style.display = "none"; // Ideally, hide when the window is confirmed open
+}
+
+
 window.addEventListener("message", function (e) {
   if (e.origin !== AUTH_URL) return;
   var session = e.data.session;
@@ -94,7 +116,7 @@ async function signUpAnonymously() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        appPackageName: "qnThpH3csJSjy0HRr9mj",
+        appPackageName: appId,
       }),
     });
     const data = await response.json();
