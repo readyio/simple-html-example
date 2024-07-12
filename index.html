@@ -94,7 +94,9 @@
 
       <!-- oauth login:start -->
       <div class="container-inner">
-        <button onclick="openAuthWindow()">Proceed with OAuth Login</button>
+        <button id="login-button" onclick="openAuthWindow()">
+          Proceed with OAuth Login
+        </button>
         <div id="response-oauth" style="display: none">
           <h2 id="login-success-label"></h2>
           <p>User ID: <span id="login-success-userId"></span></p>
@@ -120,7 +122,13 @@
 
       <!-- oauth login:start -->
       <div class="container-inner">
-        <button onclick="openAuthWindowWithLogout()">Logout</button>
+        <button
+          id="logout-button"
+          style="display: none"
+          onclick="openAuthWindowWithLogout()"
+        >
+          Logout
+        </button>
         <div id="response-oauth" style="display: none">
           <h2 id="login-success-label"></h2>
           <p>User ID: <span id="logout-success-userId"></span></p>

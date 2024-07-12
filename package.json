@@ -1,0 +1,9 @@
+{
+  "name": "simple-html-example",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "vite": "^5.3.3"
+  }
+}

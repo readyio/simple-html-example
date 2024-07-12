@@ -53,10 +53,10 @@ function openAuthWindow() {
   document.getElementById("loader").style.display = "block"; // Show the loader when opening window
 
   const windowOptions = getWindowOptions();
-  let url = `${AUTH_URL}/?url_redirect=${window.location.href}&appId=${appId}&returnSecureToken=true`;
+  let url = `${AUTH_URL}/?url_redirect=${window.location.href}&appId=${appId}&returnSecureToken=true&forceLogout=true`;
   const email = "test@email.com"; // Optional parameter that defines the email of the user automatically.
   const profile = "testProfile"; // Optional parameter that defines the Profile Name of the user automatically.
-  const view = "signup"; // Optional parameter that presents the account creation view after page loading.
+  const view = "signin"; // Optional parameter that presents the account creation view after page loading.
 
   // Check if an ID Token already exists and include it in the URL
   const existingIdToken = document.getElementById("guestIdToken").textContent;
@@ -64,29 +64,38 @@ function openAuthWindow() {
     url += `&idToken=${encodeURIComponent(existingIdToken)}`;
   }
 
-  const urlWithEmailAndProfile = `${url}&email=${email}&profile=${profile}&view=${view}`;
+  const urlWithEmailAndProfile = `${url}&profile=${profile}&view=${view}`;
   authWindow = window.open(urlWithEmailAndProfile, "_blank", windowOptions);
   document.getElementById("loader").style.display = "none"; // Ideally, hide when the window is confirmed open
 }
 
 function openAuthWindowWithLogout() {
-  document.getElementById("loader").style.display = "block"; // Show the loader when opening window
+  //document.getElementById("loader").style.display = "block"; // Show the loader when opening window
 
-  const windowOptions = getWindowOptions();
-  let url = `${AUTH_URL}/?url_redirect=${window.location.href}&appId=${appId}&returnSecureToken=true&forceLogout=true`;
-  const email = "test@email.com"; // Optional parameter that defines the email of the user automatically.
-  const profile = "testProfile"; // Optional parameter that defines the Profile Name of the user automatically.
-  const view = "signup"; // Optional parameter that presents the account creation view after page loading.
+  // const windowOptions = getWindowOptions();
+  // let url = `${AUTH_URL}/?url_redirect=${window.location.href}&appId=${appId}&returnSecureToken=true&forceLogout=true`;
+  // const email = "test@email.com"; // Optional parameter that defines the email of the user automatically.
+  // const profile = "testProfile"; // Optional parameter that defines the Profile Name of the user automatically.
+  // const view = "signup"; // Optional parameter that presents the account creation view after page loading.
 
-  // Check if an ID Token already exists and include it in the URL
-  const existingIdToken = document.getElementById("guestIdToken").textContent;
-  if (existingIdToken) {
-    url += `&idToken=${encodeURIComponent(existingIdToken)}`;
-  }
+  // // Check if an ID Token already exists and include it in the URL
+  // const existingIdToken = document.getElementById("guestIdToken").textContent;
+  // if (existingIdToken) {
+  //   url += `&idToken=${encodeURIComponent(existingIdToken)}`;
+  // }
 
-  const urlWithEmailAndProfile = `${url}&email=${email}&profile=${profile}&view=${view}`;
-  authWindow = window.open(urlWithEmailAndProfile, "_blank", windowOptions);
-  document.getElementById("loader").style.display = "none"; // Ideally, hide when the window is confirmed open
+  // const urlWithEmailAndProfile = `${url}&email=${email}&profile=${profile}&view=${view}`;
+  // authWindow = window.open(urlWithEmailAndProfile, "_blank", windowOptions);
+  // document.getElementById("loader").style.display = "none"; // Ideally, hide when the window is confirmed open
+
+  document.getElementById("login-success-label").innerHTML = "";
+  document.getElementById("login-success-userId").innerHTML = "";
+  document.getElementById("login-success-idToken").innerHTML = "";
+  document.getElementById("login-success-refreshToken").innerHTML = "";
+  document.getElementById("response-oauth").style.display = "block";
+
+  document.getElementById("logout-button").style.display = "none";
+  document.getElementById("login-button").style.display = "block";
 }
 
 window.addEventListener("message", function (e) {
@@ -101,6 +110,8 @@ window.addEventListener("message", function (e) {
     document.getElementById("login-success-refreshToken").innerHTML =
       session.refreshToken;
     document.getElementById("response-oauth").style.display = "block";
+    document.getElementById("login-button").style.display = "none";
+    document.getElementById("logout-button").style.display = "block";
 
     if (authWindow && session.closeModal) authWindow.close();
   }
