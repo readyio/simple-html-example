@@ -4,13 +4,13 @@
 
 // Staging URL's
 var AUTH_URL = "https://staging-oauth.ready.gg"; // Staging URL
-var ENV_BASE_URL = 'https://us-central1-readysandbox.cloudfunctions.net/'
+var ENV_BASE_URL = "https://us-central1-readysandbox.cloudfunctions.net/";
 
 var SIGNUP_URL = ENV_BASE_URL + "user-signUpAnonymously";
 var PURCHASE_URL = ENV_BASE_URL + "storeV2-buyVirtualItems";
 var INVENTORY_URL = ENV_BASE_URL + "inventoryV2-getByAppIds";
 
-var appId = "BTMEUeTQgkY37wLTehcl";
+var appId = "t0cjjmEBbTer4YXiRfFa";
 var idToken;
 var authWindow = null;
 
@@ -88,7 +88,6 @@ function openAuthWindowWithLogout() {
   authWindow = window.open(urlWithEmailAndProfile, "_blank", windowOptions);
   document.getElementById("loader").style.display = "none"; // Ideally, hide when the window is confirmed open
 }
-
 
 window.addEventListener("message", function (e) {
   if (e.origin !== AUTH_URL) return;
